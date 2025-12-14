@@ -1,0 +1,4 @@
+event_id,timestamp_utc,user_name,beer_count,beer_type,bar_name,city,state,latitude,longitude
+025757a4-b8bd-49f7-9d93-b4560d304a39,2025-12-14T03:34:24.254891,Test,1,IPA,Skeeps,Ann Arbor,MI,,
+f5f3583c-c58e-4195-bd7c-2800bbba4937,2025-12-14T04:15:31.491309,Crundo :),1,Lager,Halligan's,Chicago,IL,,
+15211786-7573-4062-a757-ee0087f0737c,2025-12-14T04:15:53.511784,Test,1,IPA,Skeeps,Ann Arbor,MI,,
