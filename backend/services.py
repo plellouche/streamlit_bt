@@ -11,16 +11,14 @@ import os
 
 SUPABASE_DATABASE_URL = os.environ["SUPABASE_DATABASE_URL"]
 
-
 def get_engine() -> Engine:
     return create_engine(
         SUPABASE_DATABASE_URL,
-        pool_pre_ping=True,
         pool_size=1,
         max_overflow=0,
-        connect_args={
-            "sslmode": "require"
-        },
+        pool_pre_ping=True,
+        pool_recycle=300,
+        connect_args={"sslmode": "require"},
         future=True,
     )
 
