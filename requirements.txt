@@ -9,3 +9,4 @@ streamlit-folium>=0.18
 
 geopy>=2.4
 psycopg2-binary
+sqlalchemy
