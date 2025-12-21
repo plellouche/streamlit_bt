@@ -11,18 +11,24 @@ USER_OPTIONS = [
     "Sonaal 'the fowler' Verma",
     "Paul 'irontooth' Lellouche",
     "Sammy Sug",
-    "Derin ~leather neck ~ Alev",
+    "Derin 'leather neck' Alev",
     "Matteo Adriano Ravelli Di Lorenzo Chiellini Ciabattoni",
     "Crundo :)",
     "Jack Kaffeine-Burger",
-    "Logan ~CTE~ Brinks",
+    "Logan 'CTE' Brinks",
     "Danny Heibel",
     "Ryan 'Tomahawk' Wu'",
     "Kyra ~Chase~ Heibel",
     "Joe Heibel",
     "Samurai Rei",
-    "Grant 'yellow feev' Barry",
-    "Andrew 'sugar baby' Tebeau"
+    "Grant 'Marrakesh' Barry",
+    "Andrew 'sugar baby' Tebeau",
+    "Adiboo Beaufils",
+    "Maexchen Dobby",
+    "Jojo Beckers",
+    "Goodie Daridon",
+    "Hugo 'El Chulo' Mueller",
+    "Matthi Voelkel"
 ]
 
 BEER_TYPES = [
