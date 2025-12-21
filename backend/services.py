@@ -1,24 +1,26 @@
 from __future__ import annotations
 
 from typing import Optional, Union, IO
-import io
 import time
 
 import pandas as pd
 from geopy.geocoders import Nominatim
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine
+import os
 
-SUPABASE_DATABASE_URL = (
-    "postgresql+psycopg2://postgres:Flugzeug747400%24"
-    "@db.dszvsotgghtonttigdma.supabase.co:5432/postgres"
-)
+SUPABASE_DATABASE_URL = os.environ["SUPABASE_DATABASE_URL"]
 
 
 def get_engine() -> Engine:
     return create_engine(
         SUPABASE_DATABASE_URL,
         pool_pre_ping=True,
+        pool_size=1,
+        max_overflow=0,
+        connect_args={
+            "sslmode": "require"
+        },
         future=True,
     )
 
