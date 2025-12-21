@@ -1,22 +1,25 @@
 import streamlit as st
+
 from backend.bootstrap import bootstrap_db_from_csv
 
 bootstrap_db_from_csv()
 
 st.set_page_config(
-    page_title="Beer Tracker",
+    page_title="Beer Tracker 9000",
     page_icon="🍺",
-    layout="centered",
+    layout="wide",
 )
 
-st.title("🍺 Beer Tracker")
+st.title("Beer Tracker 9000")
 
 st.markdown(
     """
-    Welcome to the Beer Tracker 9000.
+    Welcome to **Beer Tracker 9000**.
 
-    Use navigation bar on the left to:
+    Use the pages on the left to:
     - Log beers
-    - View stats
+    - View leaderboards
+    - Explore stats, maps
+
     """
 )

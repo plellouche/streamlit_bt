@@ -1,5 +1,5 @@
-import os
 import streamlit as st
+import io
 import pandas as pd
 import altair as alt
 import folium
@@ -103,11 +103,9 @@ else:
     center_lat = city_points["latitude"].mean()
     center_lon = city_points["longitude"].mean()
 
-    m = folium.Map(location=[center_lat, center_lon], zoom_start=4)
+    m = folium.Map(location=[center_lat, center_lon], zoom_start=2)
 
-    heat_data = city_points[
-        ["latitude", "longitude", "total_beers"]
-    ].values.tolist()
+    heat_data = city_points[["latitude", "longitude", "total_beers"]].values.tolist()
 
     HeatMap(
         heat_data,
@@ -117,8 +115,6 @@ else:
     ).add_to(m)
 
     st_folium(m, width=700, height=500)
-
-
 
 st.divider()
 
@@ -201,9 +197,15 @@ st.divider()
 
 st.subheader("Secondary cache - disregard")
 
-CSV_PATH = "data/beer_events.csv"
-
 if st.button("Backup"):
-    os.makedirs(os.path.dirname(CSV_PATH), exist_ok=True)
-    export_events_to_csv(CSV_PATH)
-    st.success(f"Exported data to {CSV_PATH}")
+    buffer = io.StringIO()
+    export_events_to_csv(buffer)
+
+    csv_bytes = buffer.getvalue().encode("utf-8")
+
+    st.download_button(
+        label="Download CSV",
+        data=csv_bytes,
+        file_name="beer_events.csv",
+        mime="text/csv",
+    )

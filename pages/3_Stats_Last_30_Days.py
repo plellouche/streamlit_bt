@@ -15,7 +15,7 @@ from backend.stats import (
     bender_stats,
 )
 
-st.title("Stats & Leaderboards — Last 30 Days")
+st.title("Stats (Last 30 Days)")
 
 events = get_all_events()
 events_30d = filter_last_n_days(events, days=30)
@@ -24,19 +24,23 @@ if events_30d.empty:
     st.info("No beers logged in the last 30 days. Hydration arc?")
     st.stop()
 
-# ---- Calendar Heatmap (last 30 days) ----
 st.header("Beer Logging Activity (Last 30 Days)")
 
 daily = daily_beer_counts(events_30d, days=30)
+
 if daily.empty:
     st.info("No activity in the last 30 days.")
 else:
     cal = daily.copy()
-    cal["weekday"] = cal["date"].dt.weekday  # Mon=0 .. Sun=6
+    cal["weekday"] = cal["date"].dt.weekday
+
     iso = cal["date"].dt.isocalendar()
     cal["iso_year"] = iso.year.astype(int)
     cal["iso_week"] = iso.week.astype(int)
-    cal["week_index"] = (cal["iso_year"] - cal["iso_year"].min()) * 53 + cal["iso_week"]
+
+    cal["week_index"] = (
+        (cal["iso_year"] - cal["iso_year"].min()) * 53 + cal["iso_week"]
+    )
 
     heatmap = (
         alt.Chart(cal)
@@ -58,7 +62,6 @@ else:
             ),
             color=alt.Color(
                 "beer_count:Q",
-                scale=alt.Scale(scheme="greens"),
                 legend=alt.Legend(title="Beers"),
             ),
             tooltip=[
@@ -73,7 +76,6 @@ else:
 
 st.divider()
 
-# ---- Leaderboards ----
 st.header("Leaderboards (Last 30 Days)")
 
 st.subheader("By Person")
@@ -88,13 +90,12 @@ st.dataframe(beer_type_leaderboard(events_30d), use_container_width=True)
 st.subheader("By Bar")
 bar_lb = bar_leaderboard(events_30d)
 if bar_lb.empty:
-    st.info("No bars logged in the last 30 days.")
+    st.info("No bars logged yet.")
 else:
     st.dataframe(bar_lb, use_container_width=True)
 
 st.divider()
 
-# ---- Fun Stats ----
 st.header("Fun Stats (Last 30 Days)")
 
 benchmarks = fun_benchmarks(events_30d)
@@ -115,10 +116,9 @@ with col6:
 
 st.divider()
 
-# ---- Dominance ----
 st.header("Dominance (Last 30 Days)")
-
 dom = dominance_stats(events_30d)
+
 d1, d2, d3 = st.columns(3)
 with d1:
     st.metric("Top 1 (%)", dom["top_1_pct"])
@@ -129,11 +129,10 @@ with d3:
 
 st.divider()
 
-# ---- Benders ----
-st.header("Bender Detection (7+ beers in one log, last 30 days)")
-
+st.header("Bender Detection (Last 30 Days)")
 benders = bender_stats(events_30d, threshold=7)
+
 if benders.empty:
-    st.info("No benders in the last 30 days. Suspicious.")
+    st.info("No benders logged yet. Hard to believe.")
 else:
     st.dataframe(benders, use_container_width=True)

@@ -1,4 +1,4 @@
-event_id,timestamp_utc,user_name,beer_count,beer_type,bar_name,city,state,latitude,longitude
-025757a4-b8bd-49f7-9d93-b4560d304a39,2025-12-14T03:34:24.254891,Test,1,IPA,Skeeps,Ann Arbor,MI,,
-f5f3583c-c58e-4195-bd7c-2800bbba4937,2025-12-14T04:15:31.491309,Crundo :),1,Lager,Halligan's,Chicago,IL,,
-15211786-7573-4062-a757-ee0087f0737c,2025-12-14T04:15:53.511784,Test,1,IPA,Skeeps,Ann Arbor,MI,,
+event_id,timestamp_utc,user_name,beer_count,beer_type,bar_name,city,state,country,latitude,longitude
+d1767818-b37e-438f-91f7-672da04ec787,2025-12-14T21:51:06.065172+00:00,Derin ~leather neck ~ A,2,Lager,,San Francisco,CA,United States,,
+0d672bfe-b91d-448d-a721-3817b29cb986,2025-12-14T21:52:29.778158+00:00,Max Furlani,1,Lager,,Ushuaia,,Argentina,,
+b6f68a85-0edf-4166-b536-6410d610cf0e,2025-12-14T21:53:20.357598+00:00,Paul ~irontooth~ L,1,Lager,,Frankfurt,,Germany,,

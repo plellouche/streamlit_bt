@@ -2,23 +2,27 @@ import streamlit as st
 from backend.services import log_beers
 
 
-# ---- Config ----
-
 USER_OPTIONS = [
-    "Ian ~the jester~ G",
-    "Vishwaz N",
-    "Ryan E, esquire",
-    "Varoon A",
+    "Ian 'the jester' Greene",
+    "Vishwaz Nathan",
+    "Ryan Eschelbach, esquire",
+    "Varoon Argawal",
     "Max Furlani",
-    "Sonaal ~the fowler ~ V",
-    "Paul ~irontooth~ L",
-    "Sammy S",
-    "Derin ~leather neck ~ A",
+    "Sonaal 'the fowler' Verma",
+    "Paul 'irontooth' Lellouche",
+    "Sammy Sug",
+    "Derin ~leather neck ~ Alev",
     "Matteo Adriano Ravelli Di Lorenzo Chiellini Ciabattoni",
     "Crundo :)",
     "Jack Kaffeine-Burger",
-    "Logan ~CTE~ B",
-    "Danny H",
+    "Logan ~CTE~ Brinks",
+    "Danny Heibel",
+    "Ryan 'Tomahawk' Wu'",
+    "Kyra ~Chase~ Heibel",
+    "Joe Heibel",
+    "Samurai Rei",
+    "Grant 'yellow feev' Barry",
+    "Andrew 'sugar baby' Tebeau"
 ]
 
 BEER_TYPES = [
@@ -30,11 +34,52 @@ BEER_TYPES = [
     "Sour",
     "Wheat",
     "Fruity?",
+    "Cocktail",
+    "Shot",
+    "Wine",
     "Other",
 ]
 
+COUNTRY_OPTIONS = [
+    "United States",
+    "Canada",
+    "Mexico",
+    "United Kingdom",
+    "Ireland",
+    "France",
+    "Germany",
+    "Spain",
+    "Italy",
+    "Netherlands",
+    "Belgium",
+    "Sweden",
+    "Norway",
+    "Denmark",
+    "Poland",
+    "Czechia",
+    "Austria",
+    "Switzerland",
+    "Portugal",
+    "Greece",
+    "Turkey",
+    "Israel",
+    "United Arab Emirates",
+    "India",
+    "China",
+    "Japan",
+    "South Korea",
+    "Singapore",
+    "Australia",
+    "New Zealand",
+    "Brazil",
+    "Argentina",
+    "Chile",
+    "Colombia",
+    "Peru",
+    "South Africa",
+    "Other (type manually)",
+]
 
-# ---- Page ----
 
 st.title("Log Beers")
 
@@ -46,27 +91,24 @@ with st.expander("Beer Tracker 9000 Rules", expanded=True):
         1. Thou shalt log thy beers truthfully. Deceit corrupts the ledger, and thy honor with it.
         2. Please don't blow up my database (ie. no spam)
         3. One log per drinking session (use the count field). Let the count speak plainly; do not scatter thy sins.
-        4. City and state should reflect where the beers were consumed.
-        5. Bar name is optional but encouraged.
-        6. Feature suggestions welcomed
+        4. If drink at home leave bar name empty
+        5. Location should reflect where the beers were consumed.
+        6. Feature suggestions welcomed.
         """
     )
 
 st.divider()
 
-# ---- Session defaults ----
-
 if "user_name" not in st.session_state:
     st.session_state.user_name = USER_OPTIONS[0]
-
 if "city" not in st.session_state:
     st.session_state.city = ""
-
 if "state" not in st.session_state:
     st.session_state.state = ""
-
-
-# ---- Form ----
+if "country" not in st.session_state:
+    st.session_state.country = "United States"
+if "country_manual" not in st.session_state:
+    st.session_state.country_manual = ""
 
 with st.form("log_beers_form"):
     st.subheader("Who and how many")
@@ -91,7 +133,6 @@ with st.form("log_beers_form"):
     )
 
     st.divider()
-
     st.subheader("Where")
 
     city = st.text_input(
@@ -100,11 +141,32 @@ with st.form("log_beers_form"):
         placeholder="e.g. Ann Arbor",
     )
 
-    state = st.text_input(
-        "State",
-        value=st.session_state.state,
-        placeholder="e.g. MI",
+    country_choice = st.selectbox(
+        "Country",
+        COUNTRY_OPTIONS,
+        index=COUNTRY_OPTIONS.index(st.session_state.country)
+        if st.session_state.country in COUNTRY_OPTIONS
+        else 0,
     )
+
+    country_manual = None
+    if country_choice == "Other (type manually)":
+        country_manual = st.text_input(
+            "Country (manual)",
+            value=st.session_state.country_manual,
+            placeholder="e.g. Thailand",
+        ).strip()
+        country = country_manual
+    else:
+        country = country_choice
+
+    state = None
+    if country == "United States":
+        state = st.text_input(
+            "State (US only, 2 letters)",
+            value=st.session_state.state,
+            placeholder="e.g. MI",
+        ).strip()
 
     bar_name = st.text_input(
         "Bar name (optional)",
@@ -114,34 +176,37 @@ with st.form("log_beers_form"):
     submitted = st.form_submit_button("Log beers")
 
     if submitted:
-        beer_count = int(beer_count)
-
-        if not city or not state:
-            st.error("City and state are required.")
-
-        elif beer_count > 20:
-            st.error(f"{beer_count}? Cap.")
-
+        if int(beer_count) > 20:
+            st.error(f"{int(beer_count)}? Cap.")
+        elif not city or not country:
+            st.error("City and country are required.")
+        elif country == "United States" and (not state):
+            st.error("State is required when country is United States.")
         else:
             log_beers(
                 user_name=user_name,
-                beer_count=beer_count,
+                beer_count=int(beer_count),
                 beer_type=beer_type,
                 bar_name=bar_name or None,
-                city=city,
-                state=state,
+                city=city.strip(),
+                state=(state.strip() if state else None),
+                country=country.strip(),
             )
 
-            # Persist defaults
             st.session_state.user_name = user_name
-            st.session_state.city = city
-            st.session_state.state = state
+            st.session_state.city = city.strip()
+            st.session_state.country = country_choice
+            st.session_state.country_manual = country_manual or ""
+            if country == "United States":
+                st.session_state.state = state.strip()
 
-            if beer_count <= 3:
-                st.success(f"{user_name}, {beer_count}? why even bother")
-
-            elif beer_count <= 10:
-                st.success(f"{user_name} had {beer_count} in {city}, {state}.")
-
-            else:  # 11–20
-                st.success(f"{beer_count}? well done lad")
+            bc = int(beer_count)
+            if 1 <= bc <= 3:
+                st.success(f"{user_name}, {bc}? why even bother")
+            elif 3 < bc <= 10:
+                if country == "United States":
+                    st.success(f"{user_name} had {bc} in {city.strip()}, {state.strip()}.")
+                else:
+                    st.success(f"{user_name} had {bc} in {city.strip()}, {country.strip()}.")
+            else:
+                st.success(f"{bc}? well done lad")

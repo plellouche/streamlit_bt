@@ -33,12 +33,33 @@ class SQLiteStore:
                     bar_name TEXT,
                     city TEXT,
                     state TEXT,
+                    country TEXT,
                     latitude REAL,
                     longitude REAL
                 )
                 """
             )
             conn.commit()
+
+            try:
+                conn.execute("ALTER TABLE drink_events ADD COLUMN country TEXT")
+                conn.commit()
+            except sqlite3.OperationalError:
+                # Column likely already exists.
+                pass
+
+            # Backfill: if 'country' is NULL but 'state' exists, treat as US legacy data.
+            try:
+                conn.execute(
+                    """
+                    UPDATE drink_events
+                    SET country = 'United States'
+                    WHERE country IS NULL AND state IS NOT NULL AND TRIM(state) <> ''
+                    """
+                )
+                conn.commit()
+            except sqlite3.OperationalError:
+                pass
 
     def insert_event(self, event: DrinkEvent) -> None:
         with self._get_connection() as conn:
@@ -53,10 +74,11 @@ class SQLiteStore:
                     bar_name,
                     city,
                     state,
+                    country,
                     latitude,
                     longitude
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     event.event_id,
@@ -67,6 +89,7 @@ class SQLiteStore:
                     event.bar_name,
                     event.city,
                     event.state,
+                    event.country,
                     event.latitude,
                     event.longitude,
                 ),

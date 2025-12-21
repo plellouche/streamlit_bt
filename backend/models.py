@@ -14,6 +14,7 @@ class DrinkEvent:
     bar_name: Optional[str]
     city: Optional[str]
     state: Optional[str]
+    country: Optional[str]
     latitude: Optional[float]
     longitude: Optional[float]
 
@@ -25,6 +26,7 @@ class DrinkEvent:
         bar_name: Optional[str] = None,
         city: Optional[str] = None,
         state: Optional[str] = None,
+        country: Optional[str] = None,
         latitude: Optional[float] = None,
         longitude: Optional[float] = None,
     ) -> "DrinkEvent":
@@ -43,6 +45,7 @@ class DrinkEvent:
             bar_name=_normalize_str(bar_name),
             city=_normalize_str(city),
             state=_normalize_str(state),
+            country=_normalize_str(country),
             latitude=latitude,
             longitude=longitude,
         )
